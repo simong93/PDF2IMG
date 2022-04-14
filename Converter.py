@@ -18,13 +18,15 @@ class Convert:
 
     def Main(self,PDF_file):
         for Coverted in self.ConvertPDFPages(PDF_file):
+            try:
+                image = cv2.imread(Coverted)
+                grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                angle = determine_skew(grayscale)
+                rotated = self.rotate(image, angle, (0, 0, 0))
 
-            image = cv2.imread(Coverted)
-            grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            angle = determine_skew(grayscale)
-            rotated = self.rotate(image, angle, (0, 0, 0))
-
-            cv2.imwrite(Coverted, rotated)
+                cv2.imwrite(Coverted, rotated)
+            except:
+                continue
 
         LocationMove = "RawFiles/" + PDF_file
         shutil.move(LocationMove, "RawFiles/Done")
